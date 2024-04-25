@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
@@ -81,5 +82,14 @@ public class ServiceTests {
 
         assertNotNull(listaPessoas);
         assertEquals(1, listaPessoas.size());
+    }
+
+    @Test
+    @DisplayName("Teste mockado para achar o id")
+    void FindbyIdTest() {
+        when(personRepository.findById(1L)).thenReturn(Optional.of(person));
+        Person pessoaSalva = personService.findById(1L);
+        assertNotNull(pessoaSalva);
+        assertEquals(person.getFirstName(), pessoaSalva.getFirstName());
     }
 }
