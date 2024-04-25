@@ -1,6 +1,5 @@
 package com.example.atividade;
 
-import static org.mockito.Mockito.when;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,18 +7,19 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import java.util.List;
 
+import com.example.atividade.exceptions.CreatePersonException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 
-import com.example.atividade.exceptions.CreatePersonException;
 import com.example.atividade.models.Person;
 import com.example.atividade.repository.PersonRepository;
 import com.example.atividade.services.PersonService;
@@ -35,10 +35,9 @@ public class ServiceTests {
     private PersonService personService;
 
     Person person;
-
     @BeforeEach
-    void setup() {
-            person = new Person(
+    public void personSetup() {
+        person = new Person(
             "Aurora",
             "Kruschewsky",
             "Aurora@email.com.br",
@@ -49,7 +48,6 @@ public class ServiceTests {
     @Test
     @DisplayName("Teste mockado para criar pessoa")
     void createPerson() {
-
         when(personRepository.findByEmail(person.getEmail())).thenReturn(Optional.empty());
         when(personRepository.save(person)).thenReturn(person);
 
@@ -73,5 +71,15 @@ public class ServiceTests {
 
 
         verify(personRepository, never()).save(any(Person.class));
+    }
+
+    @Test
+    @DisplayName("Teste mockado para retornar lista de pessoas")
+    void testarRetornoDeListaDePessosa(){
+        when(personRepository.findAll()).thenReturn(List.of(person));
+        List<Person> listaPessoas = personService.findAll();
+
+        assertNotNull(listaPessoas);
+        assertEquals(1, listaPessoas.size());
     }
 }
